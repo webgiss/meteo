@@ -106,9 +106,13 @@
         return { setHashChanged, setLocationHash, getCurrentLocationHash };
     })();
 
-    const createElement = (name, args) => {
-        const element = document.createElement(name);
+    const createElement = (args) => {
         args = args || {};
+        let name = 'div';
+        if (args.name) {
+            name = args.name;
+        }
+        const element = document.createElement(name);
         if (args.attributes) {
             Object.keys(args.attributes).forEach(key => {
                 const value = args.attributes[key];
@@ -131,6 +135,14 @@
         }
         if (args.html) {
             element.innerHTML = args.html;
+        }
+        if (args.children) {
+            args.children.forEach((child) => {
+                element.appendChild(child);
+            })
+        }
+        if (args.onCreated) {
+            args.onCreated(element);
         }
         return element;
     }
@@ -158,14 +170,43 @@
     }
 
     readyPromise.then(() => {
+        let meteogram1 = null;
+        let meteogram2 = null;
+        let meteogram1rest = null;
+        let meteogram2rest = null;
 
-        const all = createElement('div', { classnames: ['all'], appendTo: document.body });
-        const workspace = createElement('div', { classnames: ['workspace'], appendTo: all });
-        const meteogram1 = createElement('div', { classnames: ['meteogram', 'v1'], appendTo: workspace });
-        const meteogram2 = createElement('div', { classnames: ['meteogram', 'v2'], appendTo: workspace });
-        const rest = createElement('div', { classnames: ['rest'], appendTo: workspace });
-        const meteogram1rest = createElement('div', { classnames: ['meteogram', 'v1', 'bis'], appendTo: rest });
-        const meteogram2rest = createElement('div', { classnames: ['meteogram', 'v2', 'bis'], appendTo: rest });
+        createElement({
+            classnames: ['all'],
+            appendTo: document.body,
+            children: [
+                createElement({
+                    classnames: ['workspace'],
+                    children: [
+                        createElement({
+                            classnames: ['meteogram', 'v1'],
+                            onCreated: (element) => meteogram1 = element,
+                        }),
+                        createElement({
+                            classnames: ['meteogram', 'v2'],
+                            onCreated: (element) => meteogram2 = element,
+                        }),
+                        createElement({
+                            classnames: ['rest'],
+                            children: [
+                                createElement({
+                                    classnames: ['meteogram', 'v1', 'bis'],
+                                    onCreated: (element) => meteogram1rest = element,
+                                }),
+                                createElement({
+                                    classnames: ['meteogram', 'v2', 'bis'],
+                                    onCreated: (element) => meteogram2rest = element,
+                                }),
+                            ],
+                        }),
+                    ],
+                }),
+            ],
+        });
 
         let places = ['', ''];
 
