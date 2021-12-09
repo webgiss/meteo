@@ -31,7 +31,7 @@
         .workspace,
         .rest,
         .meteogram {
-            width: 760px;
+            width: 771px;
         }
 
         .rest,
@@ -40,7 +40,7 @@
         }
 
         .meteogram {
-            background-position: -12px -80px;
+            background-position: -2px -80px;
             background-repeat: no-repeat;
             position: relative;
         }
@@ -61,7 +61,7 @@
         }
 
         .no-days .meteogram {
-            background-position: -12px -105px;
+            background-position: -2px -105px;
         }
 
         .rest {
@@ -337,6 +337,7 @@
         setInterval(() => {
             whenHashChanged(getCurrentLocationHash());
         }, 60 * 1000)
+        window.resizeTo(workspace.clientWidth + window.outerWidth - window.innerWidth, workspace.clientHeight + window.outerHeight - window.innerHeight)
     })
 
 </script>
