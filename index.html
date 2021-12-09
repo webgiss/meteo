@@ -199,6 +199,61 @@
             element.classList.remove(className)
         }
     }
+    const placeToIdTitle = (place, secret) => {
+        let [id, name] = place.split(':')
+        let title = null;
+        if (place.indexOf(':') === -1) {
+            id = place
+            name = place
+            if (secret) {
+                title = ''
+            } else {
+                title = place
+            }
+        } else {
+            if (secret) {
+                title = name
+            } else {
+                title = `${name} (${id})`
+            }
+        }
+        return { id, title, name, place }
+    }
+
+    const getStateFromHash = (hash) => {
+        hash = hash.replace(/^\#/, '');
+        let flags = hash.split('!')[1];
+        if (!flags) {
+            flags = '';
+        }
+        const noDays = flags.includes('D');
+        const noWind = flags.includes('W');
+        const secret = flags.includes('S')
+
+        const places = hash.split('!')[0].split('|').map((place) => placeToIdTitle(place, secret));
+        return { places, noDays, noWind, secret }
+    }
+
+    const getHashFromState = (state) => {
+        const {places, noDays, noWind, secret} = state
+        return `${places.map((placeInfo)=>placeInfo.place).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${secret ? 'S' : ''}`
+    }
+
+    const toggleSecret = () => {
+        const state = getStateFromHash(getCurrentLocationHash());
+        state.secret = !state.secret;
+        setLocationHash(getHashFromState(state))
+    }
+    const toggleDays = () => {
+        const state = getStateFromHash(getCurrentLocationHash());
+        state.noDays = !state.noDays;
+        setLocationHash(getHashFromState(state))
+    }
+    const toggleWind = () => {
+        const state = getStateFromHash(getCurrentLocationHash());
+        state.noWind = !state.noWind;
+        setLocationHash(getHashFromState(state))
+    }
 
     readyPromise.then(() => {
         let meteogram1 = null;
@@ -206,7 +261,6 @@
         let meteogram1rest = null;
         let meteogram2rest = null;
         let workspace = null;
-        let secret = false;
 
         createElement({
             classnames: ['all'],
@@ -242,26 +296,6 @@
             ],
         });
 
-        const placeToIdTitle = (place) => {
-            let [id, name] = place.split(':')
-            let title = null;
-            if (place.indexOf(':') === -1) {
-                id = place
-                name = place
-                if (secret) {
-                    title = ''
-                } else {
-                    title = place
-                }
-            } else {
-                if (secret) {
-                    title = name
-                } else {
-                    title = `${name} (${id})`
-                }
-            }
-            return { id, title }
-        }
         const onPlacesChange = (places) => {
             setMeteogram(meteogram1, places[0].id, places[0].title);
             setMeteogram(meteogram2, places[1].id, places[1].title);
@@ -272,23 +306,36 @@
             setLocationHash(`#2-3022530:Créteil|2-2968054:Vincennes`)
         }
         const whenHashChanged = (hash) => {
-            hash = decodeURI(hash.replace(/^\#/, ''));
+            hash = hash.replace(/^\#/, '');
+            const state = getStateFromHash(hash);
 
-            let flags = hash.split('!')[1];
-            if (!flags) {
-                flags = '';
+            updateClass(workspace, 'no-days', state.noDays)
+            updateClass(workspace, 'no-wind', state.noWind)
+            const secret = state.secret;
+
+            onPlacesChange(state.places);
+            setDocumentTitle(`Meteo ${state.places[0].title} - ${state.places[1].title}`);
+            const newHash = getHashFromState(state);
+            if (hash !== newHash) {
+                setLocationHash(newHash)
             }
-            updateClass(workspace, 'no-days', flags.includes('D'))
-            updateClass(workspace, 'no-wind', flags.includes('W'))
-            secret = flags.includes('S')
-
-            const places = hash.split('!')[0].split('|').map(placeToIdTitle);
-            onPlacesChange(places);
-            setDocumentTitle(`Meteo ${places[0].title} - ${places[1].title}`);
         }
+        document.body.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 's': 
+                    toggleSecret();
+                    break;
+                case 'd': 
+                    toggleDays();
+                    break;
+                case 'w': 
+                    toggleWind();
+                    break;
+            }
+        })
         setHashChanged(whenHashChanged);
         setInterval(() => {
-            hash = decodeURI(getCurrentLocationHash().replace(/^\#/, ''));
+            hash = decodeURI(getCurrentLocationHash());
             whenHashChanged(hash);
         }, 60 * 1000)
     })
