@@ -236,7 +236,7 @@
 
     const getHashFromState = (state) => {
         const {places, noDays, noWind, secret} = state
-        return encodeURI(`${places.map((placeInfo)=>placeInfo.place).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${secret ? 'S' : ''}`)
+        return `${places.map((placeInfo)=>encodeURI(placeInfo.place)).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${secret ? 'S' : ''}`
     }
 
     const toggleSecret = () => {
