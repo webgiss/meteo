@@ -185,7 +185,7 @@
         setStyle(element, `background-image:url("${url}")`);
     }
     const setMeteogram = (element, id, title) => {
-        const now=(new Date()).getTime();
+        const now = (new Date()).getTime();
         setBackgroundImage(element, `https://www.yr.no/en/content/${id}/meteogram.svg#${now}`);
         if (!title) {
             title = title;
@@ -193,12 +193,12 @@
         setTitle(element, title);
     }
     const updateClass = (element, className, flag) => {
-            if (flag) {
-                element.classList.add(className)
-            } else {
-                element.classList.remove(className)
-            }
+        if (flag) {
+            element.classList.add(className)
+        } else {
+            element.classList.remove(className)
         }
+    }
 
     readyPromise.then(() => {
         let meteogram1 = null;
@@ -260,7 +260,7 @@
                     title = `${name} (${id})`
                 }
             }
-            return {id, title}
+            return { id, title }
         }
         const onPlacesChange = (places) => {
             setMeteogram(meteogram1, places[0].id, places[0].title);
@@ -287,10 +287,10 @@
             setDocumentTitle(`Meteo ${places[0].title} - ${places[1].title}`);
         }
         setHashChanged(whenHashChanged);
-        setInterval(()=>{
+        setInterval(() => {
             hash = decodeURI(getCurrentLocationHash().replace(/^\#/, ''));
             whenHashChanged(hash);
-        }, 60*1000)
+        }, 60 * 1000)
     })
 
 </script>
