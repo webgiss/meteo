@@ -31,7 +31,7 @@
         .workspace,
         .rest,
         .meteogram {
-            width: 771px;
+            width: 782px;
         }
 
         .rest,
@@ -40,7 +40,7 @@
         }
 
         .meteogram {
-            background-position: -2px -80px;
+            background-position: 0px -80px;
             background-repeat: no-repeat;
             position: relative;
         }
@@ -60,8 +60,17 @@
             height: 155px;
         }
 
+        .full .rest,
+        .full .meteogram {
+            height: 391px;
+        }
+
         .no-days .meteogram {
-            background-position: -2px -105px;
+            background-position: 0px -105px;
+        }
+
+        .full .meteogram {
+            background-position: 0px 0px;
         }
 
         .rest {
@@ -228,15 +237,16 @@
         }
         const noDays = flags.includes('D');
         const noWind = flags.includes('W');
+        const full = flags.includes('F');
         const secret = flags.includes('S')
 
         const places = hash.split('!')[0].split('|').map((place) => placeToIdTitle(place, secret));
-        return { places, noDays, noWind, secret }
+        return { places, noDays, noWind, full, secret }
     }
 
     const getHashFromState = (state) => {
-        const { places, noDays, noWind, secret } = state
-        return `${places.map((placeInfo) => encodeURI(placeInfo.place)).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${secret ? 'S' : ''}`
+        const { places, noDays, noWind, full, secret } = state
+        return `${places.map((placeInfo) => encodeURI(placeInfo.place)).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${full ? 'F' : ''}${secret ? 'S' : ''}`
     }
 
     const toggleSecret = () => {
@@ -252,6 +262,11 @@
     const toggleWind = () => {
         const state = getStateFromHash(getCurrentLocationHash());
         state.noWind = !state.noWind;
+        setLocationHash(getHashFromState(state))
+    }
+    const toggleFull = () => {
+        const state = getStateFromHash(getCurrentLocationHash());
+        state.full = !state.full;
         setLocationHash(getHashFromState(state))
     }
 
@@ -330,6 +345,9 @@
                     break;
                 case 'w':
                     toggleWind();
+                    break;
+                case 'f':
+                    toggleFull();
                     break;
             }
         })
