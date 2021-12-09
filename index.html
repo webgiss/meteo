@@ -26,22 +26,46 @@
             right: 0;
             top: 0;
             bottom: 0;
-            width: 819px;
-            height: 819px;
+        }
+
+        .workspace,
+        .rest,
+        .meteogram {
+            width: 760px;
+        }
+
+        .rest,
+        .meteogram {
+            height: 273px;
         }
 
         .meteogram {
-            width: 760px;
-            height: 273px;
             background-position: -12px -80px;
             background-repeat: no-repeat;
             position: relative;
         }
 
+        .no-wind .rest,
+        .no-wind .meteogram {
+            height: 180px;
+        }
+
+        .no-days .rest,
+        .no-days .meteogram {
+            height: 248px;
+        }
+        
+        .no-wind.no-days .rest,
+        .no-wind.no-days .meteogram {
+            height: 155px;
+        }
+
+        .no-days .meteogram {
+            background-position: -12px -105px;
+        }
+
         .rest {
             position: relative;
-            width: 819px;
-            height: 273px;
         }
 
         .v2 {
