@@ -221,7 +221,7 @@
     }
 
     const getStateFromHash = (hash) => {
-        hash = hash.replace(/^\#/, '');
+        hash = decodeURI(hash.replace(/^\#/, ''));
         let flags = hash.split('!')[1];
         if (!flags) {
             flags = '';
@@ -236,7 +236,7 @@
 
     const getHashFromState = (state) => {
         const {places, noDays, noWind, secret} = state
-        return `${places.map((placeInfo)=>placeInfo.place).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${secret ? 'S' : ''}`
+        return encodeURI(`${places.map((placeInfo)=>placeInfo.place).join('|')}!${noDays ? 'D' : ''}${noWind ? 'W' : ''}${secret ? 'S' : ''}`)
     }
 
     const toggleSecret = () => {
@@ -335,8 +335,7 @@
         })
         setHashChanged(whenHashChanged);
         setInterval(() => {
-            hash = decodeURI(getCurrentLocationHash());
-            whenHashChanged(hash);
+            whenHashChanged(getCurrentLocationHash());
         }, 60 * 1000)
     })
 
