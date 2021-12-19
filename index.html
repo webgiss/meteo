@@ -338,19 +338,21 @@
             }
         }
         document.body.addEventListener('keydown', (e) => {
-            switch (e.key) {
-                case 's':
-                    toggleSecret();
-                    break;
-                case 'd':
-                    toggleDays();
-                    break;
-                case 'w':
-                    toggleWind();
-                    break;
-                case 'f':
-                    toggleFull();
-                    break;
+            if (!e.altKey && !e.shiftKey && !e.ctrlKey) {
+                switch (e.key) {
+                    case 's':
+                        toggleSecret();
+                        break;
+                    case 'd':
+                        toggleDays();
+                        break;
+                    case 'w':
+                        toggleWind();
+                        break;
+                    case 'f':
+                        toggleFull();
+                        break;
+                }
             }
         })
         setHashChanged(whenHashChanged);
