@@ -325,9 +325,13 @@
             hash = hash.replace(/^\#/, '');
             const state = getStateFromHash(hash);
 
-            updateClass(workspace, 'no-days', state.noDays)
-            updateClass(workspace, 'no-wind', state.noWind)
-            updateClass(workspace, 'full', state.full)
+            const noDays = state.noDays && !state.full;
+            const noWind = state.noWind && !state.full;
+            const full = state.full;
+
+            updateClass(workspace, 'no-days', noDays)
+            updateClass(workspace, 'no-wind', noWind)
+            updateClass(workspace, 'full', full)
             const secret = state.secret;
 
             onPlacesChange(state.places);
